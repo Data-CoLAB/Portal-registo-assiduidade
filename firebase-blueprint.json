@@ -1,0 +1,167 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Collaborator or Manager profile",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "status": { "type": "string" },
+        "schedule": { "type": "object", "description": "Customized work schedule settings for the collaborator" },
+        "birthDate": { "type": "string", "description": "Collaborator date of birth in YYYY-MM-DD format" },
+        "lastBirthdayNotificationDate": { "type": "string", "description": "Date of the last birthday email sent (YYYY-MM-DD)" },
+        "lastBirthdayNotificationYear": { "type": "number", "description": "Calendar year of the last birthday email sent" }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Clock in and clock out timestamp log",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "date": { "type": "string" },
+        "clockIn": { "type": "string" },
+        "totalHours": { "type": "number" }
+      },
+      "required": ["userId", "date", "clockIn"]
+    },
+    "ManagerNotification": {
+      "title": "ManagerNotification",
+      "description": "In-portal alert for managers regarding missing clock-in or excess working hours",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "priority": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["type", "title", "message", "priority", "read", "createdAt"]
+    },
+    "HybridPlan": {
+      "title": "HybridPlan",
+      "description": "Weekly hybrid work schedule defined by collaborator",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "weekStartDate": { "type": "string" },
+        "days": { "type": "object" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "userName", "weekStartDate", "days"]
+    },
+    "AuditLogEntry": {
+      "title": "AuditLogEntry",
+      "description": "Audit log for system operations, record modifications, and attendance traceability",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "string" },
+        "action": { "type": "string" },
+        "category": { "type": "string" },
+        "severity": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "actorName": { "type": "string" },
+        "entityType": { "type": "string" }
+      },
+      "required": ["timestamp", "action", "category", "severity", "title", "actorName", "entityType"]
+    },
+    "CollaboratorDocument": {
+      "title": "CollaboratorDocument",
+      "description": "Attached documents, medical certificates, and justifications for collaborator dossiers",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "fileName": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "uploadedAt": { "type": "string" },
+        "uploadedBy": { "type": "string" }
+      },
+      "required": ["userId", "userName", "title", "category", "fileName", "fileUrl", "uploadedAt"]
+    },
+    "DailyAttendanceExport": {
+      "title": "DailyAttendanceExport",
+      "description": "Daily automated attendance records export snapshot for cloud redundancy outside local device",
+      "type": "object",
+      "properties": {
+        "exportDate": { "type": "string" },
+        "exportedAt": { "type": "string" },
+        "exportedBy": { "type": "string" },
+        "triggerType": { "type": "string" },
+        "totalRecordsCount": { "type": "number" },
+        "dayRecordsCount": { "type": "number" },
+        "totalHoursWorked": { "type": "number" },
+        "activeUsersCount": { "type": "number" },
+        "status": { "type": "string" },
+        "statusACT": { "type": "string" },
+        "dataIntegrityHash": { "type": "string" },
+        "source": { "type": "string" },
+        "retentionYears": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["exportDate", "exportedAt", "triggerType", "totalRecordsCount", "status", "dataIntegrityHash", "createdAt"]
+    },
+    "BirthdayDispatch": {
+      "title": "BirthdayDispatch",
+      "description": "Annual birthday greeting dispatch record for strict once-per-year idempotency",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "year": { "type": "number" },
+        "date": { "type": "string" },
+        "sentAt": { "type": "string" },
+        "channel": { "type": "string" },
+        "messageId": { "type": "string" }
+      },
+      "required": ["id", "userId", "userName", "userEmail", "year", "date", "sentAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile collection"
+    },
+    "/records/{recordId}": {
+      "schema": { "$ref": "#/entities/AttendanceRecord" },
+      "description": "Attendance punch logs"
+    },
+    "/notifications/{notifId}": {
+      "schema": { "$ref": "#/entities/ManagerNotification" },
+      "description": "Manager notifications for missing clock-ins, overtime, and excess hours"
+    },
+    "/hybrid_plans/{planId}": {
+      "schema": { "$ref": "#/entities/HybridPlan" },
+      "description": "Weekly hybrid work modality plans defined by team members"
+    },
+    "/audit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLogEntry" },
+      "description": "System audit trail and record alteration history"
+    },
+    "/collaborator_documents/{docId}": {
+      "schema": { "$ref": "#/entities/CollaboratorDocument" },
+      "description": "Collaborator document dossiers and proof attachments"
+    },
+    "/daily_attendance_exports/{exportId}": {
+      "schema": { "$ref": "#/entities/DailyAttendanceExport" },
+      "description": "Daily automated export snapshots of attendance records for cloud redundancy"
+    },
+    "/birthday_dispatches/{dispatchId}": {
+      "schema": { "$ref": "#/entities/BirthdayDispatch" },
+      "description": "Proof of annual birthday greeting email dispatches"
+    }
+  }
+}

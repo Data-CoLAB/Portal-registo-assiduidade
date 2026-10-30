@@ -1,0 +1,6 @@
+{
+  "name": "Portal RH Data CoLAB",
+  "description": "Sistema completo de registo de ponto, gestão de assiduidade, painel de auditoria e rastreabilidade laboral, relatórios oficiais para colaboradores e contingência offline.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

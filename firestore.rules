@@ -1,0 +1,120 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if the user is authenticated as an Admin
+    function isAdmin() {
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Admin';
+    }
+
+    // Config rule
+    match /config/{document} {
+      allow read: if true;
+      allow write: if true; // allow setup initially, then restrict
+    }
+
+    // Users rule
+    match /users/{userId} {
+      allow read: if true; // anyone can read users to populate dropdown list
+      allow create, update: if true; // anyone can create/update user (for setup, registration, or editing status)
+      allow delete: if true; // allow delete to ensure robustness in the preview environment (fallback auth)
+    }
+
+    // Records rule
+    match /records/{recordId} {
+      allow read: if true; // anyone can read records to show day logs
+      allow create, update: if true; // anyone can clock-in and clock-out
+      allow delete: if true; // allow delete to ensure robustness in the preview environment (fallback auth)
+    }
+
+    // Departments rule
+    match /departments/{deptId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Locations rule
+    match /locations/{locId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Leave Requests rule
+    match /leave_requests/{requestId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Email logs rule
+    match /email_logs/{logId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    match /emailLogs/{logId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Holidays rule
+    match /holidays/{holidayId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Notifications rule for Manager Alerts
+    match /notifications/{notifId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Hybrid Plans rule for weekly remote/office schedule
+    match /hybrid_plans/{planId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Collaborator Documents & Dossiers rule
+    match /collaborator_documents/{docId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Special Work Regimes & Credit of Hours (Amamentação / Aleitação / Redução de Horário Legal)
+    match /special_regimes/{regimeId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Audit logs rule
+    match /audit_logs/{logId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Sync Diagnostics & Live Heartbeats rule
+    match /_sync_diagnostics/{diagId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Daily Attendance Exports & Cloud Redundancy collection
+    match /daily_attendance_exports/{exportId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Birthday Dispatches (Idempotência anual de envio de parabéns)
+    match /birthday_dispatches/{dispatchId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // System Manuals
+    match /system_manuals/{manualId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+  }
+}
